@@ -11,7 +11,7 @@ class BestContributorToSelenideTestCase {
 
   @Test
   void solntsevShouldBeTheTopContributor() {
-    // открыть страницу репозитория селенида
+    // закрыть страницу репозитория селенида
     open("https://github.com/selenide/selenide");
     // подвести мышку к первому аватару из блока contributors
     $(".BorderGrid").$(byText("Contributors")).ancestor(".BorderGrid-row")
