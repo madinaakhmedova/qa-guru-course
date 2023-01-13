@@ -8,13 +8,7 @@ import org.junit.jupiter.api.Test;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
-public class AutomationPracticeFormTestCase {
-
-    @BeforeAll
-    static void beforeAll() {
-        Configuration.browserSize = "1920x1080";
-        Configuration.baseUrl = "https://demoqa.com";
-    }
+public class AutomationPracticeFormTestCase extends TestBase {
 
     @Test
     void fillFormTest() {
@@ -22,18 +16,21 @@ public class AutomationPracticeFormTestCase {
         String userSurname = "Akhmedova";
         String userEmail = "akhmedovamadina11@gmail.com";
         String userNumber = "9991112233";
+        String gender = "Female";
 
-        open("/automation-practice-form");
+        registrationPage.openPage();
+
+        registrationPage.openPage()
+                .setFirstName(userFirstname)
+                .setLastName(userSurname)
+                .setEmail(userEmail)
+                .setGender(gender)
+                .setPhone(userNumber)
+                .setBirthDate("06", "January", "1993");
         SelenideElement userForm = $("#userForm");
 
         userForm.parent().$("h5").shouldHave(text("Student Registration Form"));
 
-        userForm.$("#firstName").setValue(userFirstname);
-        userForm.$("#lastName").setValue(userSurname);
-        userForm.$("#userEmail").setValue(userEmail);
-        userForm.$("#gender-radio-2").parent().$("label").shouldBe(text("Female"));
-        userForm.$("#gender-radio-2").parent().$("label").click();
-        userForm.$("#userNumber").setValue(userNumber);
         userForm.$("#hobbies-checkbox-1").parent().$("label").shouldBe(text("Sports"));
         userForm.$("#hobbies-checkbox-1").parent().$("label").click();
         userForm.$("#uploadPicture").uploadFromClasspath("test.png");
@@ -57,31 +54,18 @@ public class AutomationPracticeFormTestCase {
         $("#subjectsInput").pressEnter();
 
 
-        SelenideElement modal = $("[role=dialog]");
-        modal.shouldBe(visible);
-
-        SelenideElement tableTbody = modal.$("table tbody");
-        tableTbody.$("tr", 0).$("td",0).shouldBe(text("Student Name"));
-        tableTbody.$("tr", 0).$("td",1).shouldBe(text(userFirstname + " " + userSurname));
-        tableTbody.$("tr", 1).$("td",0).shouldBe(text("Student Email"));
-        tableTbody.$("tr", 1).$("td",1).shouldBe(text(userEmail));
-        tableTbody.$("tr", 2).$("td",0).shouldBe(text("Gender"));
-        tableTbody.$("tr", 2).$("td",1).shouldBe(text("Female"));
-        tableTbody.$("tr", 3).$("td",0).shouldBe(text("Mobile"));
-        tableTbody.$("tr", 3).$("td",1).shouldBe(text(userNumber));
-        tableTbody.$("tr", 4).$("td",0).shouldBe(text("Date of Birth"));
-        tableTbody.$("tr", 4).$("td",1).shouldBe(text("06 January,1993"));
-        tableTbody.$("tr", 5).$("td",0).shouldBe(text("Subjects"));
-        tableTbody.$("tr", 5).$("td",1).shouldBe(text("Maths"));
-        tableTbody.$("tr", 6).$("td",0).shouldBe(text("Hobbies"));
-        tableTbody.$("tr", 6).$("td",1).shouldBe(text("Sports"));
-        tableTbody.$("tr", 7).$("td",0).shouldBe(text("Picture"));
-        tableTbody.$("tr", 7).$("td",1).shouldBe(text("test.png"));
-        tableTbody.$("tr", 8).$("td",0).shouldBe(text("Address"));
-        tableTbody.$("tr", 8).$("td",1).shouldBe(empty);
-        tableTbody.$("tr", 9).$("td",0).shouldBe(text("State and City"));
-        tableTbody.$("tr", 9).$("td",1).shouldBe(text("Uttar Pradesh Lucknow"));
-
+        registrationPage.verifyResultsModalAppears()
+                .verifyResult("Student Name", text(userFirstname + " " + userSurname))
+                .verifyResult("Student Email", text(userEmail))
+                .verifyResult("Gender", text(gender))
+                .verifyResult("Mobile", text(userNumber))
+                .verifyResult("Date of Birth", text("06 January,1993"))
+                .verifyResult("Hobbies", text("Sports"))
+                .verifyResult("Subjects", text("Maths"))
+                .verifyResult("Picture", text("test.png"))
+                .verifyResult("Address", empty)
+                .verifyResult("State and City", text("Uttar Pradesh Lucknow"))
+        ;
 
     }
 }
